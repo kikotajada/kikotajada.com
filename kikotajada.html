@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiko Tajada — Perpetual Learner</title>
+  <meta name="description" content="Francisco 'Kiko' Tajada — Supply chain, strategy & finance professional based in Zurich." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #fefdf8;
+      --text:         #111111;
+      --muted:        #5a5a5a;
+      --faint:        #9a9a9a;
+      --border:       #e8e6df;
+      --accent:       #c48f00;
+      --accent-bg:    #fdf4dc;
+      --white:        #ffffff;
+      --font:         'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ──────────────────────────────────── */
+    .site {
+      min-height: 100vh;
+    }
+
+    .main {
+      padding: 3.5rem 5rem 6rem;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ──────────────────────────────────── */
+    .header { margin-bottom: 3.5rem; }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+    }
+
+    .site-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 1.75rem; }
+
+    nav a {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    nav a:hover { color: var(--text); }
+
+    .hero-profile {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .hero-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .hero-tagline {
+      font-size: 13px;
+      color: var(--faint);
+      margin-bottom: 0.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .social-link:hover { color: var(--text); }
+    .social-link svg { width: 13px; height: 13px; flex-shrink: 0; fill: currentColor; }
+
+    /* ── Currently ───────────────────────────────── */
+    .currently-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .currently-item {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 1rem;
+      align-items: baseline;
+    }
+
+    .currently-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-top: 2px;
+    }
+
+    .currently-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .currently-text a {
+      color: var(--text);
+      text-decoration: underline;
+      text-decoration-color: var(--border);
+      text-underline-offset: 2px;
+    }
+    .currently-text a:hover { text-decoration-color: var(--text); }
+
+    /* ── Intro ───────────────────────────────────── */
+    .intro { margin-bottom: 3.5rem; }
+
+    .intro h1 {
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* ── Sections ────────────────────────────────── */
+    section { margin-bottom: 3rem; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Experience ──────────────────────────────── */
+    .exp-item {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .exp-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    details summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    details summary::-webkit-details-marker { display: none; }
+
+    .summary-toggle {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--faint);
+      line-height: 1;
+      margin-top: 2px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+      user-select: none;
+    }
+    details[open] .summary-toggle { transform: rotate(45deg); }
+
+    .exp-role {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .exp-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .exp-company {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .exp-dot {
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    .exp-location {
+      font-size: 12px;
+      color: var(--faint);
+    }
+
+    .exp-date {
+      font-size: 11px;
+      color: var(--faint);
+      white-space: nowrap;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .exp-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 0.85rem;
+      padding-left: 0;
+    }
+
+    .exp-body p { margin-bottom: 0.5rem; }
+    .exp-body p:last-child { margin-bottom: 0; }
+
+    .exp-body ul {
+      padding-left: 1.1rem;
+      margin: 0.4rem 0 0.75rem;
+    }
+    .exp-body li { margin-bottom: 0.3rem; }
+
+    .exp-sub-heading {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Education ───────────────────────────────── */
+    .edu-item { margin-bottom: 1.5rem; }
+    .edu-item:last-child { margin-bottom: 0; }
+
+    .edu-degree {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .edu-school {
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      font-style: italic;
+    }
+
+    .edu-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Skills ──────────────────────────────────── */
+    .skills-group { margin-bottom: 1.25rem; }
+    .skills-group:last-child { margin-bottom: 0; }
+
+    .skills-category {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag.accent {
+      background: var(--accent-bg);
+      border-color: #f0d080;
+      color: var(--accent);
+    }
+
+    /* ── Interests ───────────────────────────────── */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 2rem;
+    }
+
+    .interest-item {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .interest-item::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .footer a {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer a:hover { color: var(--text); }
+
+    .footer-copy {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    /* ── Responsive ──────────────────────────────── */
+    @media (max-width: 960px) {
+      .main { padding: 2.5rem 1.75rem 4rem; }
+    }
+
+    @media (max-width: 480px) {
+      .main { padding: 2rem 1.25rem 3rem; }
+      .interests-grid { grid-template-columns: 1fr; }
+      .header-top { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+
+    <!-- ── Main Content ── -->
+    <main class="main">
+
+      <header class="header">
+        <div class="header-top">
+          <a class="site-name" href="/">Kiko Tajada</a>
+          <nav>
+            <a href="#experience">Experience</a>
+            <a href="#education">Education</a>
+            <a href="#skills">Skills</a>
+          </nav>
+        </div>
+        <div class="hero-profile">
+          <img class="avatar"
+            src="kiko-photo.jpg"
+            alt="Kiko Tajada" />
+          <div>
+            <p class="hero-name">Francisco "Kiko" Tajada</p>
+            <p class="hero-tagline">Perpetual learner &nbsp;·&nbsp; Zurich, Switzerland</p>
+            <div class="social-links">
+              <a class="social-link" href="https://www.linkedin.com/in/kikotajada/" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                LinkedIn
+              </a>
+              <a class="social-link" href="https://x.com/kikotajada" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                X
+              </a>
+              <a class="social-link" href="https://github.com/kikotajada" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="intro">
+        <h1>Connecting the dots across strategy, supply chain, and finance — blending creativity with analytical rigor to drive impactful results.</h1>
+        <p>Currently at adidas in Lucerne, leading digital process management within Global Product Supply. Industrial Engineer by training, CFA Level II candidate by conviction.</p>
+      </div>
+
+      <!-- Currently -->
+      <section>
+        <h2 class="section-label">Currently</h2>
+        <div class="currently-grid">
+          <div class="currently-item">
+            <span class="currently-label">Working</span>
+            <span class="currently-text">Senior Manager at adidas — leading digital process management within Global Product Supply in Lucerne</span>
+          </div>
+          <div class="currently-item">
+            <span class="currently-label">Studying</span>
+            <span class="currently-text">CFA Program — building expertise in financial analysis, valuation, and investment management</span>
+          </div>
+          <div class="currently-item">
+            <span class="currently-label">Writing</span>
+            <span class="currently-text">Occasionally on <a href="https://kikotajada.com/blog/" target="_blank">the blog</a> — supply chain, finance, and ideas worth sharing</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Experience -->
+      <section id="experience">
+        <h2 class="section-label">Experience</h2>
+
+        <div class="exp-item">
+          <details>
+            <summary>
+              <div>
+                <div class="exp-role">Senior Manager, Global Product Supply — Digital Process Management</div>
+                <div class="exp-meta">
+                  <span class="exp-company">adidas</span>
+                  <span class="exp-dot">·</span>
+                  <span class="exp-location">Lucerne, Switzerland</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="exp-date">Oct 2025 – Present</span>
+                <span class="summary-toggle">+</span>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p>Part of Global Product Supply Planning team. First-level support of SAP applications used in Supply Planning, acting as interface between Tech and Business users.</p>
+              <div class="tags" style="margin-top:0.5rem">
+                <span class="tag">SAP BTP</span>
+                <span class="tag">SAP AFS</span>
+                <span class="tag">SAP S/4 HANA</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="exp-item">
+          <details>
+            <summary>
+              <div>
+                <div class="exp-role">Manager, Supply Chain Head Office</div>
+                <div class="exp-meta">
+                  <span class="exp-company">adidas</span>
+                  <span class="exp-dot">·</span>
+                  <span class="exp-location">Lucerne, Switzerland</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="exp-date">May 2023 – Present</span>
+                <span class="summary-toggle">+</span>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p><span class="exp-sub-heading">Jan 2024 – Present &nbsp;—&nbsp; Chief of Staff to VP, Global Logistics</span></p>
+              <ul>
+                <li>Supported VP designing and driving the strategy of the team across selected projects and initiatives</li>
+                <li>Created templates and frameworks for analyzing Logistics Operations performance</li>
+                <li>Organized the adidas Logistics Summit in Vietnam (80+ attendees)</li>
+                <li>Gained people leadership experience managing an intern and driving team objectives</li>
+                <li>Supported strategic updates, Board presentations, and global market calls</li>
+              </ul>
+              <p><span class="exp-sub-heading">Jun – Dec 2023 &nbsp;—&nbsp; Chief of Staff to SVP, Global Product Supply</span></p>
+              <ul>
+                <li>Coordinated Season Readiness check-ins with cross-functional teams</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="exp-item">
+          <details>
+            <summary>
+              <div>
+                <div class="exp-role">Specialist, Global Product Supply — Master Planning</div>
+                <div class="exp-meta">
+                  <span class="exp-company">adidas</span>
+                  <span class="exp-dot">·</span>
+                  <span class="exp-location">Lucerne, Switzerland</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="exp-date">Sep 2021 – May 2023</span>
+                <span class="summary-toggle">+</span>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p>Master Planning sets the planning framework to execute adidas' Integrated Business Plan and product supply strategy.</p>
+              <ul>
+                <li>Led Robotic Process Automation within Master Planning — sole "citizen developer" to build a full unattended RPA solution from scratch using Git, VB.net, and Jenkins</li>
+                <li>Part of Game Plan team: monthly availability projection reporting for the factory supplier base, progressing from Accessories &amp; Gear to Footwear (the largest division)</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="exp-item">
+          <details>
+            <summary>
+              <div>
+                <div class="exp-role">Business Process Optimization Intern</div>
+                <div class="exp-meta">
+                  <span class="exp-company">Biogen</span>
+                  <span class="exp-dot">·</span>
+                  <span class="exp-location">Zug, Switzerland</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="exp-date">Sep 2020 – Aug 2021</span>
+                <span class="summary-toggle">+</span>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p>Full-time one-year internship in the External Manufacturing department. Managed continuous improvement projects aimed at process excellence.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="exp-item">
+          <details>
+            <summary>
+              <div>
+                <div class="exp-role">Mechanical Engineering Intern</div>
+                <div class="exp-meta">
+                  <span class="exp-company">Dematic</span>
+                  <span class="exp-dot">·</span>
+                  <span class="exp-location">Madrid, Spain</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="exp-date">Jul 2018 – Jan 2019</span>
+                <span class="summary-toggle">+</span>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p>Dematic is a global leader in supply chain automation. Supported engineers in designing layouts for material handling systems, tailoring solutions to client requirements and optimizing operational efficiency.</p>
+            </div>
+          </details>
+        </div>
+
+      </section>
+
+      <!-- Education -->
+      <section id="education">
+        <h2 class="section-label">Education</h2>
+
+        <div class="edu-item">
+          <div class="edu-degree">M.Sc. in Industrial Engineering</div>
+          <div class="edu-school">Universidad Politécnica de Madrid</div>
+          <p class="edu-desc">Strong foundation in mathematics, statistics, physics, and systems optimization. Expertise in organizational strategy, business operations, project management, and resource optimization.</p>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Chartered Financial Analyst — Level II Passed</div>
+          <div class="edu-school">CFA Institute</div>
+          <p class="edu-desc">Advanced expertise in financial analysis, valuation, risk management, and investment strategies — enhancing the ability to make data-driven decisions across global markets.</p>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section id="skills">
+        <h2 class="section-label">Skills</h2>
+
+        <div class="skills-group">
+          <div class="skills-category">Technical</div>
+          <div class="tags">
+            <span class="tag">Data Analysis</span>
+            <span class="tag">Process Optimization</span>
+            <span class="tag">Financial Analysis</span>
+            <span class="tag">Supply Chain Strategy</span>
+            <span class="tag">Project Management</span>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-category">Tools</div>
+          <div class="tags">
+            <span class="tag">Microsoft Excel</span>
+            <span class="tag">Power BI</span>
+            <span class="tag">SAP</span>
+            <span class="tag">PowerPoint</span>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-category">Languages</div>
+          <div class="tags">
+            <span class="tag accent">Spanish — native</span>
+            <span class="tag">English — fluent</span>
+            <span class="tag">French — fluent</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interests -->
+      <section>
+        <h2 class="section-label">Interests</h2>
+        <div class="interests-grid">
+          <div class="interest-item">Corporate Strategy &amp; Innovation</div>
+          <div class="interest-item">Investing &amp; Portfolio Management</div>
+          <div class="interest-item">Logistics &amp; Supply Chain</div>
+          <div class="interest-item">Content Creation</div>
+          <div class="interest-item">Long-Distance Running &amp; Marathons</div>
+          <div class="interest-item">Travel &amp; Cultural Immersion</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="mailto:ftajadalostao@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/kikotajada/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://x.com/kikotajada" target="_blank" rel="noopener">X</a>
+        <a href="https://github.com/kikotajada" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://kikotajada.com/blog/">Blog</a>
+        <span class="footer-copy">© 2026 Kiko Tajada</span>
+      </footer>
+
+    </main>
+
+
+  </div>
+</body>
+</html>
