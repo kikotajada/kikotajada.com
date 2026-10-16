@@ -63,7 +63,7 @@
       text-decoration: none;
     }
 
-    nav { display: flex; gap: 1.75rem; }
+    nav { display: flex; gap: 1.75rem; flex-wrap: wrap; }
 
     nav a {
       font-size: 11px;
@@ -402,6 +402,37 @@
       color: var(--faint);
     }
 
+    /* ── Featured: Historias de Pasta ────────────── */
+    .feature {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.25rem 1.5rem;
+      align-items: center;
+      background: #141210;
+      color: #fbf6e9;
+      border-radius: 16px;
+      padding: 1.6rem 1.75rem;
+      margin-bottom: 3.5rem;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+    .feature:hover { transform: translateY(-2px); }
+    .feature::after {
+      content: ""; position: absolute; right: -70px; top: -70px; width: 220px; height: 220px;
+      border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(242,179,61,0.32), rgba(242,179,61,0) 70%);
+    }
+    .feature-logo { width: 76px; height: 76px; border-radius: 50%; border: 3px solid #f2b33d; background: #fff; }
+    .feature-kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #f2b33d; margin-bottom: 0.25rem; }
+    .feature-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
+    .feature-desc { font-size: 13px; color: #d9d2c0; line-height: 1.6; }
+    .feature-stats { display: flex; gap: 1.75rem; margin-top: 0.9rem; flex-wrap: wrap; }
+    .feature-stat-value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+    .feature-stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #a39c8a; }
+    .feature-cta { font-size: 12px; font-weight: 600; color: #f2b33d; margin-top: 0.9rem; display: inline-block; }
+
     /* ── Responsive ──────────────────────────────── */
     @media (max-width: 960px) {
       .main { padding: 2.5rem 1.75rem 4rem; }
@@ -411,6 +442,9 @@
       .main { padding: 2rem 1.25rem 3rem; }
       .interests-grid { grid-template-columns: 1fr; }
       .header-top { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      nav { gap: 0.5rem 1.1rem; }
+      .feature { grid-template-columns: 1fr; padding: 1.4rem; }
+      .feature-logo { width: 56px; height: 56px; }
     }
   </style>
 </head>
@@ -424,9 +458,10 @@
         <div class="header-top">
           <a class="site-name" href="/">Kiko Tajada</a>
           <nav>
+            <a href="/historias-de-pasta/">Historias de Pasta</a>
+            <a href="/projects/">Projects</a>
             <a href="/blog/">Blog</a>
             <a href="/contact/">Contact</a>
-            <a href="/projects/">Projects</a>
           </nav>
         </div>
         <div class="hero-profile">
@@ -459,6 +494,22 @@
         <p>Currently at adidas global Supply Chain office in Switzerland, leading functional application support within Global Product Supply. Industrial Engineer and Level III candidate in the CFA® Program.</p>
       </div>
 
+      <!-- Featured project -->
+      <a class="feature" href="/historias-de-pasta/">
+        <img class="feature-logo" src="/projects/historiasdepasta-logo.png" alt="" width="76" height="76" />
+        <div>
+          <div class="feature-kicker">What I'm building</div>
+          <div class="feature-title">Historias de Pasta</div>
+          <div class="feature-desc">An animated personal-finance channel for Spain: recurring characters, real numbers, lessons told as stories.</div>
+          <div class="feature-stats" id="hdpStats" hidden>
+            <div><div class="feature-stat-value" id="hdpViews">—</div><div class="feature-stat-label">Views</div></div>
+            <div><div class="feature-stat-value" id="hdpFollowers">—</div><div class="feature-stat-label">Followers</div></div>
+            <div><div class="feature-stat-value" id="hdpDays">—</div><div class="feature-stat-label">Days live</div></div>
+          </div>
+          <span class="feature-cta">See the live dashboard →</span>
+        </div>
+      </a>
+
       <!-- Currently -->
       <section>
         <h2 class="section-label">Currently</h2>
@@ -473,7 +524,7 @@
           </div>
           <div class="currently-item">
             <span class="currently-label">Creating</span>
-            <span class="currently-text">Historias de Pasta, personal finance education and media for Spain, told as stories. Visit <a href="https://historiasdepasta.es/" target="_blank" rel="noopener">historiasdepasta.es&nbsp;↗</a></span>
+            <span class="currently-text"><a href="/historias-de-pasta/">Historias de Pasta</a>, personal finance education and media for Spain, told as stories, at <a href="https://historiasdepasta.es/" target="_blank" rel="noopener">historiasdepasta.es&nbsp;↗</a></span>
           </div>
         </div>
       </section>
@@ -692,5 +743,15 @@
 
 
   </div>
+  <script>
+    fetch('/data/historias-stats.json', { cache: 'no-cache' }).then(r => r.json()).then(s => {
+      const c = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+      const f = new Intl.NumberFormat('en-US');
+      document.getElementById('hdpViews').textContent = c.format(s.totals.views);
+      document.getElementById('hdpFollowers').textContent = f.format(s.totals.followers);
+      document.getElementById('hdpDays').textContent = s.totals.days;
+      document.getElementById('hdpStats').hidden = false;
+    }).catch(() => {});
+  </script>
 </body>
 </html>
