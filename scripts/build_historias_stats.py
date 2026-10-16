@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Build data/historias-stats.json for the Historias de Pasta dashboard.
 
-Inputs (exported from Metricool, brand "Historias de Pasta"):
-  data/metricool/evolution.json    daily account metrics, one row per day
-  data/metricool/tiktok_posts.json per-video TikTok views (date, title, views)
+Inputs: raw Metricool responses (brand "Historias de Pasta", id 7304322),
+saved verbatim from getAnalyticsDataByMetrics as {"rows": [...]}:
+  data/metricool/evolution.json     metrics = EVOLUTION_METRICS (in that order); last column is the date
+  data/metricool/tiktok_posts.json  metrics = TIKTOK_POST_METRICS (date, description, views)
 
 Usage: python3 scripts/build_historias_stats.py [--updated YYYY-MM-DD]
 """
 import json
+import re
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -16,6 +18,15 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "metricool"
 OUT = ROOT / "data" / "historias-stats.json"
 LAUNCH = "2026-10-04"  # first day with real publishing volume
+
+# Order matters: it maps the columns of the raw Metricool response.
+EVOLUTION_METRICS = [
+    ("YTEV01", "yt_subs"), ("YTEV02", "yt_views"), ("YTEV04", "yt_videos"), ("YTEV05", "yt_gained"),
+    ("YTEV06", "yt_lost"), ("TKEV07", "tk_followers"), ("TKEV12", "tk_views"), ("TKEV01", "tk_videos"),
+    ("TKEV08", "tk_newf"), ("IGEV01", "ig_followers"), ("IGEV05", "ig_views"), ("IGEV23", "ig_reels_views"),
+    ("IGEV37", "ig_posts"), ("FBEV17", "fb_followers"), ("FBEV22", "fb_reels_views"), ("FBEV49", "fb_media_views"),
+]
+TIKTOK_POST_METRICS = ["TKPO01", "TKPO05", "TKPO07"]  # published date, description, views
 
 PLATFORMS = [
     # id, name, handle, url, followers column, daily-views column
@@ -34,20 +45,33 @@ def iso(d):
     return f"{d[:4]}-{d[4:6]}-{d[6:]}"
 
 
+def clean_title(desc, limit=72):
+    """Headline of a TikTok caption: the text before the first emoji or hashtag word."""
+    t = re.sub(r"^\s*Replying to @\S+\s*", "", desc)
+    t = re.split(r"\s#[^\d\W]|Contenido educativo|Educativo,|Ejemplo ilustrativo", t)[0]
+    # cut at the first emoji (captions use them as separators)
+    t = re.split(r"[\U0001F000-\U0001FFFF\u2600-\u27BF\uFE0F]|\\ud83", t)[0]
+    t = re.sub(r"\s+", " ", t).strip(" .,:;")
+    t = re.sub(r"^Est[ea] es \w+\.\s+(?=\S)", "", t)  # drop the series intro ("Este es Dani.")
+    if len(t) > limit:
+        t = t[:limit].rsplit(" ", 1)[0].rstrip(" .,:;") + "…"
+    return t
+
+
 def main():
     updated = date.today().isoformat()
     if "--updated" in sys.argv:
         updated = sys.argv[sys.argv.index("--updated") + 1]
 
     evo = json.loads((RAW / "evolution.json").read_text())
-    cols = evo["columns"]
+    cols = [c for _, c in EVOLUTION_METRICS] + ["date"]
     days = {}
     for row in evo["rows"]:
         r = dict(zip(cols, row))
         days[iso(r["date"])] = r
 
     tk = json.loads((RAW / "tiktok_posts.json").read_text())
-    tk_rows = [dict(zip(tk["columns"], r)) for r in tk["rows"]]
+    tk_rows = [dict(zip(["date", "title", "views"], r)) for r in tk["rows"] if r and r[2] not in (None, "")]
     tk_by_day = {}
     for r in tk_rows:
         d = iso(r["date"])
@@ -94,7 +118,7 @@ def main():
         },
         "platforms": platforms,
         "topVideos": [
-            {"platform": "TikTok", "title": r["title"], "views": int(float(r["views"])), "date": iso(r["date"])}
+            {"platform": "TikTok", "title": clean_title(r["title"]), "views": int(float(r["views"])), "date": iso(r["date"])}
             for r in top
         ],
         "notes": "TikTok and Instagram views are counted on the day each video was published; "
