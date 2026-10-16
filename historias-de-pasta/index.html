@@ -424,8 +424,8 @@
     }
 
     function render(s) {
-      const upd = new Date(s.updated + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-      document.getElementById('updated').textContent = 'Updated ' + upd;
+      const asOf = new Date((s.asOf || s.updated) + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('updated').textContent = 'Data as of ' + asOf;
       countUp(document.getElementById('kpiViews'), s.totals.views, true);
       countUp(document.getElementById('kpiFollowers'), s.totals.followers, false);
       countUp(document.getElementById('kpiDays'), s.totals.days, false);

@@ -62,6 +62,7 @@ def main():
     updated = date.today().isoformat()
     if "--updated" in sys.argv:
         updated = sys.argv[sys.argv.index("--updated") + 1]
+    as_of = (datetime.fromisoformat(updated).date() - timedelta(days=1)).isoformat()
 
     evo = json.loads((RAW / "evolution.json").read_text())
     cols = [c for _, c in EVOLUTION_METRICS] + ["date"]
@@ -109,12 +110,13 @@ def main():
     top = sorted(tk_rows, key=lambda r: -float(r["views"]))[:3]
     stats = {
         "updated": updated,
+        "asOf": as_of,  # Metricool lags a day: the data describes the day before the run
         "launched": LAUNCH,
         "source": "Metricool",
         "totals": {
             "followers": sum(p["followers"] for p in platforms),
             "views": sum(p["views"] for p in platforms),
-            "days": (datetime.fromisoformat(updated).date() - start).days,
+            "days": (datetime.fromisoformat(as_of).date() - start).days + 1,  # launch day counts as day 1
         },
         "platforms": platforms,
         "topVideos": [
