@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historias de Pasta — Kiko Tajada</title>
+  <meta name="description" content="Historias de Pasta: an animated personal-finance channel for Spain, with live followers and views across Instagram, TikTok, YouTube and Facebook." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #fefdf8;
+      --text:      #111111;
+      --muted:     #5a5a5a;
+      --faint:     #9a9a9a;
+      --border:    #e8e6df;
+      --accent:    #c48f00;
+      --accent-bg: #fdf4dc;
+      --white:     #ffffff;
+      --ink:       #141210;
+      --font:      'Inter', system-ui, -apple-system, sans-serif;
+
+      /* platform series — fixed order, validated (CVD + normal vision) */
+      --instagram: #2a78d6;
+      --tiktok:    #eb6834;
+      --youtube:   #1baf7a;
+      --facebook:  #eda100;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .main { padding: 3.5rem 5rem 6rem; max-width: 880px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .header-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+    .site-name {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text); text-decoration: none;
+    }
+    nav { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+    nav a {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--faint); text-decoration: none; transition: color 0.15s;
+    }
+    nav a:hover, nav a.active { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--ink);
+      color: #fbf6e9;
+      border-radius: 18px;
+      padding: 2.5rem 2.5rem 2.25rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.75rem;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+    }
+    .hero::after {
+      content: ""; position: absolute; right: -80px; top: -80px;
+      width: 260px; height: 260px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,179,61,0.35), rgba(242,179,61,0) 70%);
+      pointer-events: none;
+    }
+    .hero-logo {
+      width: 104px; height: 104px; border-radius: 50%;
+      border: 3px solid #f2b33d; background: #fff;
+    }
+    .hero-kicker {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #f2b33d; margin-bottom: 0.4rem;
+    }
+    .hero h1 {
+      font-size: 34px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
+      margin-bottom: 0.7rem;
+    }
+    .hero p { font-size: 14px; color: #d9d2c0; line-height: 1.7; max-width: 52ch; }
+    .hero-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      padding: 7px 13px; border-radius: 999px;
+      border: 1px solid rgba(251,246,233,0.25); color: #fbf6e9;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { border-color: #f2b33d; background: rgba(242,179,61,0.12); }
+    .btn.primary { background: #f2b33d; border-color: #f2b33d; color: var(--ink); }
+    .btn.primary:hover { background: #f7c45e; }
+
+    /* ── Sections ── */
+    section { margin-bottom: 3.25rem; }
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 1.5rem; padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    }
+    .live {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 10px; letter-spacing: 0.08em; color: var(--muted); text-transform: none; font-weight: 500;
+    }
+    .live::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%; background: #1baf7a;
+      box-shadow: 0 0 0 0 rgba(27,175,122,0.5); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(27,175,122,0.45); }
+      70% { box-shadow: 0 0 0 7px rgba(27,175,122,0); }
+      100% { box-shadow: 0 0 0 0 rgba(27,175,122,0); }
+    }
+    @media (prefers-reduced-motion: reduce) { .live::before { animation: none; } }
+
+    /* ── Headline stats ── */
+    .kpis {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;
+    }
+    .kpi {
+      background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+    }
+    .kpi-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 0.3rem;
+    }
+    .kpi-value {
+      font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 0.25rem; }
+
+    /* ── Platform cards ── */
+    .platforms { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    .pcard {
+      background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1rem 1rem 0.85rem; text-decoration: none; color: var(--text);
+      display: flex; flex-direction: column; gap: 0.15rem;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .pcard:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .pname {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 12px; font-weight: 600; color: var(--text);
+    }
+    .swatch { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+    .phandle { font-size: 11px; color: var(--faint); margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pfollowers { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.15; }
+    .pmeta { font-size: 11px; color: var(--muted); }
+    .spark { margin-top: 0.6rem; height: 34px; width: 100%; display: block; }
+
+    /* ── Chart ── */
+    .chart-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.25rem 1.25rem 1rem; position: relative;
+    }
+    .chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .chart-title { font-size: 14px; font-weight: 600; }
+    .chart-sub { font-size: 12px; color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 11px; color: var(--muted); }
+    #viewsChart { width: 100%; display: block; }
+    .tooltip {
+      position: absolute; pointer-events: none; z-index: 5;
+      background: var(--ink); color: #fbf6e9; border-radius: 8px;
+      padding: 0.6rem 0.75rem; font-size: 12px; line-height: 1.5; min-width: 150px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18); opacity: 0; transition: opacity 0.1s;
+    }
+    .tooltip .tt-date { font-weight: 700; margin-bottom: 0.25rem; }
+    .tooltip .tt-row { display: flex; justify-content: space-between; gap: 1rem; }
+    .tooltip .tt-row span:first-child { display: inline-flex; align-items: center; gap: 0.35rem; color: #d9d2c0; }
+    .tooltip .tt-row span:last-child { font-variant-numeric: tabular-nums; }
+    .tooltip .tt-total { border-top: 1px solid rgba(251,246,233,0.2); margin-top: 0.3rem; padding-top: 0.3rem; font-weight: 600; }
+
+    details.table-view { margin-top: 0.75rem; }
+    details.table-view summary { cursor: pointer; font-size: 11px; font-weight: 600; color: var(--faint); letter-spacing: 0.06em; }
+    details.table-view summary:hover { color: var(--text); }
+    .tbl-wrap { overflow-x: auto; margin-top: 0.6rem; }
+    table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }
+    th, td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-weight: 700; }
+
+    /* ── Top videos ── */
+    .top-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
+    .top-item {
+      display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center;
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 1rem;
+    }
+    .top-rank { font-size: 18px; font-weight: 800; color: var(--accent); text-align: center; }
+    .top-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+    .top-meta { font-size: 11px; color: var(--faint); }
+    .top-views { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .footnote { font-size: 11px; color: var(--faint); margin-top: 0.9rem; line-height: 1.6; }
+
+    /* ── Story / how ── */
+    .prose p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 0.9rem; }
+    .prose strong { color: var(--text); font-weight: 600; }
+    .cast { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+    .cast-item { background: var(--accent-bg); border: 1px solid #f0d080; border-radius: 12px; padding: 1rem 1.1rem; }
+    .cast-name { font-size: 15px; font-weight: 700; margin-bottom: 0.2rem; }
+    .cast-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .step { border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; background: var(--white); }
+    .step-num { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
+    .step-title { font-size: 14px; font-weight: 600; margin-bottom: 0.25rem; }
+    .step-desc { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.25rem; }
+    .tag { font-size: 12px; color: var(--muted); background: var(--white); border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 3rem; padding-top: 1.75rem; border-top: 1px solid var(--border);
+      display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+    }
+    .footer a {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--faint); text-decoration: none;
+    }
+    .footer a:hover { color: var(--text); }
+    .footer-copy { margin-left: auto; font-size: 11px; color: var(--faint); }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) { .main { padding: 2.5rem 1.75rem 4rem; } }
+    @media (max-width: 760px) {
+      .platforms { grid-template-columns: repeat(2, 1fr); }
+      .cast { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .main { padding: 2rem 1rem 3rem; }
+      .header-top { flex-direction: column; align-items: flex-start; gap: 0.9rem; margin-bottom: 2rem; }
+      nav { gap: 0.5rem 1.1rem; }
+      .hero { grid-template-columns: 1fr; padding: 1.75rem 1.4rem; gap: 1rem; }
+      .hero-logo { width: 72px; height: 72px; }
+      .hero h1 { font-size: 28px; }
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .kpis .kpi:first-child { grid-column: 1 / -1; }
+      .kpi-value { font-size: 28px; }
+      .pfollowers { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="main">
+    <header>
+      <div class="header-top">
+        <a href="/" class="site-name">Kiko Tajada</a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/historias-de-pasta/" class="active">Historias de Pasta</a>
+          <a href="/projects/">Projects</a>
+          <a href="/blog/">Blog</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="hero">
+      <img class="hero-logo" src="/projects/historiasdepasta-logo.png" alt="Historias de Pasta logo" width="104" height="104" />
+      <div>
+        <div class="hero-kicker">My side project · since October 2026</div>
+        <h1>Historias de Pasta</h1>
+        <p>An animated personal-finance channel for Spain. Recurring characters, real fact-checked numbers, and money lessons told as stories, in Spanish, on Instagram, TikTok, YouTube and Facebook.</p>
+        <div class="hero-links">
+          <a class="btn primary" href="https://historiasdepasta.es/" target="_blank" rel="noopener">historiasdepasta.es ↗</a>
+          <a class="btn" href="#numbers">See the numbers ↓</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <section id="numbers">
+      <h2 class="section-label">
+        <span>The numbers</span>
+        <span class="live" id="updated">Loading…</span>
+      </h2>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-label">Views</div>
+          <div class="kpi-value" id="kpiViews">—</div>
+          <div class="kpi-sub">across all platforms</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Followers</div>
+          <div class="kpi-value" id="kpiFollowers">—</div>
+          <div class="kpi-sub" id="kpiFollowersSub">across 4 platforms</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Days live</div>
+          <div class="kpi-value" id="kpiDays">—</div>
+          <div class="kpi-sub" id="kpiDaysSub">since launch</div>
+        </div>
+      </div>
+
+      <div class="platforms" id="platforms"></div>
+
+      <div class="chart-card" id="chartCard">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">Daily views by platform</div>
+            <div class="chart-sub" id="chartSub"></div>
+          </div>
+          <div class="legend" id="legend"></div>
+        </div>
+        <svg id="viewsChart" role="img" aria-label="Stacked bar chart of daily views by platform"></svg>
+        <div class="tooltip" id="tooltip"></div>
+        <details class="table-view">
+          <summary>Show as table</summary>
+          <div class="tbl-wrap"><table id="viewsTable"></table></div>
+        </details>
+      </div>
+
+      <div class="top-list" id="topVideos"></div>
+      <p class="footnote" id="footnote"></p>
+    </section>
+
+    <!-- Story -->
+    <section>
+      <h2 class="section-label">What it is</h2>
+      <div class="prose">
+        <p>Most personal-finance content in Spain is either a lecture or a sales pitch. Historias de Pasta does it the other way round: <strong>every lesson is a short story about a character</strong>, with the real numbers behind it. Revolving cards, bank fund fees, margin calls, mortgages, compound interest, emergency funds.</p>
+        <p>The tagline of the most-watched series says it all: <strong>“No seas como Dani.”</strong></p>
+      </div>
+      <div class="cast">
+        <div class="cast-item">
+          <div class="cast-name">Dani</div>
+          <div class="cast-desc">Makes the mistakes so you don't have to: the revolving card, the expensive bank fund, the margin loan.</div>
+        </div>
+        <div class="cast-item">
+          <div class="cast-name">María</div>
+          <div class="cast-desc">Dani's sister. Started investing ten years earlier, and compound interest did the rest.</div>
+        </div>
+        <div class="cast-item">
+          <div class="cast-name">Paco</div>
+          <div class="cast-desc">The narrator and the explainer. When Dani gets into trouble, Paco steps in to break down the numbers.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-label">How it's made</h2>
+      <div class="prose">
+        <p>It's a side project next to my full-time job, so it only works as a <strong>system</strong>. Original, character-driven explainers made with AI, with every script fact-checked and approved by a human.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01 · Script</div>
+          <div class="step-title">Story first, numbers checked</div>
+          <div class="step-desc">Each episode is a story with explainer pauses. Every figure is sourced and every script is approved by me before anything gets made.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02 · Voice &amp; scenes</div>
+          <div class="step-title">Consistent characters</div>
+          <div class="step-desc">Voices with ElevenLabs, cartoon scenes from saved characters with Higgsfield, so Dani always looks like Dani.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03 · Edit</div>
+          <div class="step-title">The video motor</div>
+          <div class="step-desc">An automated pipeline assembles full 15–20 minute episodes, and each Short series has its own template built in HyperFrames.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">04 · Publish &amp; learn</div>
+          <div class="step-title">Four platforms, one loop</div>
+          <div class="step-desc">Scheduling and analytics through Metricool. The same numbers feed the dashboard above and the next round of scripts.</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag">Claude</span>
+        <span class="tag">ElevenLabs</span>
+        <span class="tag">Higgsfield</span>
+        <span class="tag">HyperFrames</span>
+        <span class="tag">Metricool</span>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a href="https://historiasdepasta.es/" target="_blank" rel="noopener">historiasdepasta.es</a>
+      <a href="https://www.instagram.com/historias_pasta/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@historias.pasta" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.youtube.com/channel/UCrToCbAnFH1Al7mHJjlORAw" target="_blank" rel="noopener">YouTube</a>
+      <span class="footer-copy">© 2026 Kiko Tajada</span>
+    </footer>
+  </main>
+
+  <script>
+  (function () {
+    const fmtFull = new Intl.NumberFormat('en-US');
+    const fmtCompact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+    const color = id => `var(--${id})`;
+    const short = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+    fetch('/data/historias-stats.json', { cache: 'no-cache' })
+      .then(r => r.json())
+      .then(render)
+      .catch(() => { document.getElementById('updated').textContent = 'Stats unavailable right now'; });
+
+    function countUp(el, target, compact) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const show = v => el.textContent = compact ? fmtCompact.format(v) : fmtFull.format(Math.round(v));
+      if (reduce) return show(target);
+      const t0 = performance.now(), dur = 1100;
+      (function tick(t) {
+        const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        show(target * e);
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+
+    function render(s) {
+      const upd = new Date(s.updated + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('updated').textContent = 'Updated ' + upd;
+      countUp(document.getElementById('kpiViews'), s.totals.views, true);
+      countUp(document.getElementById('kpiFollowers'), s.totals.followers, false);
+      countUp(document.getElementById('kpiDays'), s.totals.days, false);
+      document.getElementById('kpiDaysSub').textContent = 'since launch on ' + short(s.launched);
+
+      // Platform cards
+      document.getElementById('platforms').innerHTML = s.platforms.map(p => `
+        <a class="pcard" href="${p.url}" target="_blank" rel="noopener">
+          <span class="pname"><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span>
+          <span class="phandle">${esc(p.handle)}</span>
+          <span class="pfollowers">${fmtFull.format(p.followers)}</span>
+          <span class="pmeta">followers · ${fmtCompact.format(p.views)} views</span>
+          ${spark(p)}
+        </a>`).join('');
+
+      // Legend
+      document.getElementById('legend').innerHTML = s.platforms.map(p =>
+        `<span><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span>`).join('');
+
+      const days = s.platforms[0].viewsSeries.map(d => d[0]);
+      document.getElementById('chartSub').textContent = short(days[0]) + ' – ' + short(days[days.length - 1]);
+
+      drawChart(s, days);
+      window.addEventListener('resize', () => drawChart(s, days));
+      buildTable(s, days);
+
+      document.getElementById('topVideos').innerHTML =
+        `<div class="chart-title" style="margin-top:0.75rem">Most-watched videos</div>` +
+        s.topVideos.map((v, i) => `
+          <div class="top-item">
+            <div class="top-rank">${i + 1}</div>
+            <div><div class="top-title">${esc(v.title)}</div><div class="top-meta">${esc(v.platform)} · ${short(v.date)}</div></div>
+            <div class="top-views">${fmtCompact.format(v.views)} views</div>
+          </div>`).join('');
+
+      document.getElementById('footnote').textContent = 'Source: ' + s.source + '. ' + s.notes;
+    }
+
+    function spark(p) {
+      const pts = p.viewsSeries.filter(d => d[1] !== null);
+      if (pts.length < 2) return '<svg class="spark"></svg>';
+      const W = 160, H = 34, max = Math.max(...pts.map(d => d[1])) || 1;
+      const all = p.viewsSeries;
+      const x = i => 2 + (i / (all.length - 1)) * (W - 4);
+      const y = v => H - 3 - (v / max) * (H - 6);
+      let d = '', started = false;
+      all.forEach((pt, i) => {
+        if (pt[1] === null) { started = false; return; }
+        d += (started ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(pt[1]).toFixed(1);
+        started = true;
+      });
+      const li = all.map((pt, i) => [pt, i]).filter(a => a[0][1] !== null).pop();
+      return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${d}" fill="none" stroke="${color(p.id)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <circle cx="${x(li[1])}" cy="${y(li[0][1])}" r="2.5" fill="${color(p.id)}"/></svg>`;
+    }
+
+    function niceMax(v) {
+      const p = Math.pow(10, Math.floor(Math.log10(v)));
+      for (const m of [1, 1.2, 1.6, 2, 4, 6, 8, 10]) if (m * p >= v) return m * p;
+      return 10 * p;
+    }
+
+    function drawChart(s, days) {
+      const svg = document.getElementById('viewsChart');
+      const W = svg.clientWidth || 700;
+      const H = W < 480 ? 220 : 260;
+      const m = { t: 8, r: 4, b: 26, l: 40 };
+      const iw = W - m.l - m.r, ih = H - m.t - m.b;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.setAttribute('height', H);
+
+      const totals = days.map((_, i) => s.platforms.reduce((a, p) => a + (p.viewsSeries[i][1] || 0), 0));
+      const ymax = niceMax(Math.max(...totals));
+      const y = v => m.t + ih - (v / ymax) * ih;
+      const band = iw / days.length;
+      const bw = Math.min(34, band * 0.62);
+
+      let g = '';
+      // grid
+      for (let k = 0; k <= 4; k++) {
+        const v = ymax * k / 4, yy = y(v);
+        g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#ece9e1" stroke-width="1"/>`;
+        g += `<text x="${m.l - 8}" y="${yy + 3.5}" text-anchor="end" font-size="10" fill="#9a9a9a">${k === 0 ? '0' : fmtCompact.format(v)}</text>`;
+      }
+      const every = W < 480 ? 3 : (W < 640 ? 2 : 1);
+      days.forEach((d, i) => {
+        const cx = m.l + band * i + band / 2;
+        let base = 0;
+        const segs = s.platforms.map(p => ({ p, v: p.viewsSeries[i][1] || 0 })).filter(a => a.v > 0);
+        segs.forEach((sg, j) => {
+          const y0 = y(base), y1 = y(base + sg.v);
+          const top = j === segs.length - 1;
+          const gap = j > 0 ? 2 : 0;           // 2px surface gap between stacked fills
+          const hgt = Math.max(0, y0 - y1 - gap);
+          const yTop = y1;
+          if (hgt > 0) {
+            if (top) {
+              const r = Math.min(4, hgt, bw / 2);
+              const x0 = cx - bw / 2, x1 = cx + bw / 2, yb = yTop + hgt;
+              g += `<path d="M${x0} ${yb}V${yTop + r}Q${x0} ${yTop} ${x0 + r} ${yTop}H${x1 - r}Q${x1} ${yTop} ${x1} ${yTop + r}V${yb}Z" fill="${color(sg.p.id)}"/>`;
+            } else {
+              g += `<rect x="${cx - bw / 2}" y="${yTop}" width="${bw}" height="${hgt}" fill="${color(sg.p.id)}"/>`;
+            }
+          }
+          base += sg.v;
+        });
+        if (i % every === 0 || i === days.length - 1) {
+          g += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="10" fill="#9a9a9a">${short(d)}</text>`;
+        }
+        g += `<rect class="hit" data-i="${i}" x="${m.l + band * i}" y="${m.t}" width="${band}" height="${ih}" fill="transparent"/>`;
+      });
+      g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}" stroke="#cfcac0" stroke-width="1"/>`;
+      g += `<rect id="hoverBand" x="0" y="${m.t}" width="${band}" height="${ih}" fill="#111" opacity="0" pointer-events="none"/>`;
+      svg.innerHTML = g;
+
+      const tip = document.getElementById('tooltip');
+      const card = document.getElementById('chartCard');
+      const hb = svg.querySelector('#hoverBand');
+      svg.querySelectorAll('.hit').forEach(el => {
+        const show = ev => {
+          const i = +el.dataset.i;
+          hb.setAttribute('x', m.l + band * i); hb.setAttribute('opacity', '0.04');
+          const rows = s.platforms.slice().reverse().map(p => {
+            const v = p.viewsSeries[i][1];
+            return `<div class="tt-row"><span><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span><span>${v === null ? '—' : fmtFull.format(v)}</span></div>`;
+          }).join('');
+          tip.innerHTML = `<div class="tt-date">${short(days[i])}</div>${rows}<div class="tt-row tt-total"><span>Total</span><span>${fmtFull.format(totals[i])}</span></div>`;
+          tip.style.opacity = 1;
+          const cr = card.getBoundingClientRect(), sr = svg.getBoundingClientRect();
+          const scale = sr.width / W;
+          let left = sr.left - cr.left + (m.l + band * i + band / 2) * scale + 12;
+          if (left + tip.offsetWidth > cr.width - 8) left -= tip.offsetWidth + 24;
+          tip.style.left = Math.max(8, left) + 'px';
+          tip.style.top = (sr.top - cr.top + 10) + 'px';
+        };
+        el.addEventListener('mouseenter', show);
+        el.addEventListener('mousemove', show);
+        el.addEventListener('touchstart', show, { passive: true });
+        el.addEventListener('mouseleave', () => { tip.style.opacity = 0; hb.setAttribute('opacity', '0'); });
+      });
+    }
+
+    function buildTable(s, days) {
+      let h = '<thead><tr><th>Day</th>' + s.platforms.map(p => `<th>${esc(p.name)}</th>`).join('') + '<th>Total</th></tr></thead><tbody>';
+      days.forEach((d, i) => {
+        let tot = 0;
+        h += `<tr><td>${short(d)}</td>` + s.platforms.map(p => {
+          const v = p.viewsSeries[i][1]; tot += v || 0;
+          return `<td>${v === null ? '—' : fmtFull.format(v)}</td>`;
+        }).join('') + `<td>${fmtFull.format(tot)}</td></tr>`;
+      });
+      document.getElementById('viewsTable').innerHTML = h + '</tbody>';
+    }
+  })();
+  </script>
+</body>
+</html>
