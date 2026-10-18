@@ -448,7 +448,7 @@
           <span class="phandle">${esc(p.handle)}</span>
           <span class="pfollowers">${fmtFull.format(p.followers)}</span>
           <span class="pmeta">followers · ${fmtCompact.format(p.views)} views</span>
-          ${spark(p)}
+          ${spark(p, s)}
         </a>`).join('');
 
       // Legend
@@ -474,23 +474,21 @@
       document.getElementById('footnote').textContent = 'Source: ' + s.source + '. ' + s.notes;
     }
 
-    function spark(p) {
-      const pts = p.viewsSeries.filter(d => d[1] !== null);
+    // Sparkline: cumulative followers. All cards share one date axis so the curves compare.
+    function spark(p, s) {
+      const pts = p.followersSeries;
       if (pts.length < 2) return '<svg class="spark"></svg>';
+      const t = d => new Date(d + 'T12:00:00').getTime();
+      const all = s.platforms.flatMap(q => q.followersSeries.map(d => t(d[0])));
+      const t0 = Math.min(...all), t1 = Math.max(...all), span = (t1 - t0) || 1;
       const W = 160, H = 34, max = Math.max(...pts.map(d => d[1])) || 1;
-      const all = p.viewsSeries;
-      const x = i => 2 + (i / (all.length - 1)) * (W - 4);
+      const x = d => 2 + ((t(d) - t0) / span) * (W - 4);
       const y = v => H - 3 - (v / max) * (H - 6);
-      let d = '', started = false;
-      all.forEach((pt, i) => {
-        if (pt[1] === null) { started = false; return; }
-        d += (started ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(pt[1]).toFixed(1);
-        started = true;
-      });
-      const li = all.map((pt, i) => [pt, i]).filter(a => a[0][1] !== null).pop();
+      const d = pts.map((pt, i) => (i ? 'L' : 'M') + x(pt[0]).toFixed(1) + ' ' + y(pt[1]).toFixed(1)).join('');
+      const last = pts[pts.length - 1];
       return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
         <path d="${d}" fill="none" stroke="${color(p.id)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-        <circle cx="${x(li[1])}" cy="${y(li[0][1])}" r="2.5" fill="${color(p.id)}"/></svg>`;
+        <circle cx="${x(last[0]).toFixed(1)}" cy="${y(last[1]).toFixed(1)}" r="2.5" fill="${color(p.id)}"/></svg>`;
     }
 
     function niceMax(v) {
