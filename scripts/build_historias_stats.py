@@ -78,14 +78,16 @@ def main():
         d = iso(r["date"])
         tk_by_day[d] = tk_by_day.get(d, 0) + int(float(r["views"]))
 
-    # Window: launch → last day where any views were recorded
+    # Window: launch → last day where any views were recorded, but never later than
+    # two days before the run: the most recent day is still incomplete in Metricool.
     view_cols = [p[5] for p in PLATFORMS if p[5]]
     last = max(
         [d for d, r in days.items() if any(num(r.get(c)) for c in view_cols)]
         + list(tk_by_day)
     )
     start = datetime.fromisoformat(LAUNCH).date()
-    end = datetime.fromisoformat(last).date()
+    chart_cutoff = datetime.fromisoformat(updated).date() - timedelta(days=2)
+    end = min(datetime.fromisoformat(last).date(), chart_cutoff)
     window = [(start + timedelta(n)).isoformat() for n in range((end - start).days + 1)]
 
     platforms = []
