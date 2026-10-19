@@ -1,12 +1,12 @@
 {
- "updated": "2026-10-18",
- "asOf": "2026-10-17",
+ "updated": "2026-10-19",
+ "asOf": "2026-10-18",
  "launched": "2026-10-04",
  "source": "Metricool",
  "totals": {
-  "followers": 6086,
-  "views": 1125471,
-  "days": 14
+  "followers": 6935,
+  "views": 1288633,
+  "days": 15
  },
  "platforms": [
   {
@@ -14,8 +14,8 @@
    "name": "Instagram",
    "handle": "@historias_pasta",
    "url": "https://www.instagram.com/historias_pasta/",
-   "followers": 3238,
-   "views": 600711,
+   "followers": 3515,
+   "views": 655486,
    "followersSeries": [
     [
      "2026-10-08",
@@ -56,60 +56,68 @@
     [
      "2026-10-17",
      3238
+    ],
+    [
+     "2026-10-18",
+     3515
     ]
    ],
    "viewsSeries": [
     [
      "2026-10-04",
-     5981
+     6191
     ],
     [
      "2026-10-05",
-     9754
+     10057
     ],
     [
      "2026-10-06",
-     54564
+     54998
     ],
     [
      "2026-10-07",
-     51998
+     54209
     ],
     [
      "2026-10-08",
-     135422
+     139277
     ],
     [
      "2026-10-09",
-     30013
+     30705
     ],
     [
      "2026-10-10",
-     47831
+     48965
     ],
     [
      "2026-10-11",
-     83503
+     87407
     ],
     [
      "2026-10-12",
-     28465
+     29096
     ],
     [
      "2026-10-13",
-     13893
+     14452
     ],
     [
      "2026-10-14",
-     24247
+     25017
     ],
     [
      "2026-10-15",
-     13851
+     14597
     ],
     [
      "2026-10-16",
-     89415
+     102494
+    ],
+    [
+     "2026-10-17",
+     19530
     ]
    ]
   },
@@ -118,8 +126,8 @@
    "name": "TikTok",
    "handle": "@historias.pasta",
    "url": "https://www.tiktok.com/@historias.pasta",
-   "followers": 2740,
-   "views": 487002,
+   "followers": 3289,
+   "views": 583209,
    "followersSeries": [
     [
      "2026-10-12",
@@ -140,6 +148,10 @@
     [
      "2026-10-17",
      2740
+    ],
+    [
+     "2026-10-18",
+     3289
     ]
    ],
    "viewsSeries": [
@@ -181,19 +193,23 @@
     ],
     [
      "2026-10-13",
-     110478
+     121181
     ],
     [
      "2026-10-14",
-     130355
+     148566
     ],
     [
      "2026-10-15",
-     140608
+     157385
     ],
     [
      "2026-10-16",
-     95718
+     129272
+    ],
+    [
+     "2026-10-17",
+     14335
     ]
    ]
   },
@@ -202,8 +218,8 @@
    "name": "YouTube",
    "handle": "Historias de Pasta",
    "url": "https://www.youtube.com/channel/UCrToCbAnFH1Al7mHJjlORAw",
-   "followers": 91,
-   "views": 24129,
+   "followers": 95,
+   "views": 24727,
    "followersSeries": [
     [
      "2026-10-09",
@@ -240,6 +256,10 @@
     [
      "2026-10-17",
      91
+    ],
+    [
+     "2026-10-18",
+     95
     ]
    ],
    "viewsSeries": [
@@ -293,6 +313,10 @@
     ],
     [
      "2026-10-16",
+     598
+    ],
+    [
+     "2026-10-17",
      null
     ]
    ]
@@ -302,8 +326,8 @@
    "name": "Facebook",
    "handle": "Historias de Pasta",
    "url": "https://www.facebook.com/1366206256581346",
-   "followers": 17,
-   "views": 13629,
+   "followers": 36,
+   "views": 25211,
    "followersSeries": [
     [
      "2026-10-10",
@@ -336,6 +360,10 @@
     [
      "2026-10-17",
      17
+    ],
+    [
+     "2026-10-18",
+     36
     ]
    ],
    "viewsSeries": [
@@ -361,19 +389,19 @@
     ],
     [
      "2026-10-09",
-     195
+     196
     ],
     [
      "2026-10-10",
-     1654
+     1656
     ],
     [
      "2026-10-11",
-     3341
+     3345
     ],
     [
      "2026-10-12",
-     1250
+     1254
     ],
     [
      "2026-10-13",
@@ -381,15 +409,19 @@
     ],
     [
      "2026-10-14",
-     2228
+     2235
     ],
     [
      "2026-10-15",
-     942
+     945
     ],
     [
      "2026-10-16",
-     1239
+     1249
+    ],
+    [
+     "2026-10-17",
+     10887
     ]
    ]
   }
@@ -398,20 +430,20 @@
   {
    "platform": "TikTok",
    "title": "Dani se compra una tele de 3.000 € y la paga con la tarjeta revolving…",
-   "views": 130255,
+   "views": 146233,
    "date": "2026-10-15"
   },
   {
    "platform": "TikTok",
    "title": "Dani mete 200 €/mes en el fondo que le recomendó su banco, con una…",
-   "views": 76361,
+   "views": 81286,
    "date": "2026-10-14"
   },
   {
    "platform": "TikTok",
-   "title": "Dani tiene 20.000 € y su broker le presta otros 20.000 € para invertir…",
-   "views": 57492,
-   "date": "2026-10-13"
+   "title": "Quiere un coche de 25.000 € y el concesionario se lo pone fácil: «solo…",
+   "views": 68671,
+   "date": "2026-10-16"
   }
  ],
  "notes": "TikTok and Instagram views are counted on the day each video was published; YouTube and Facebook report views per day. Platforms report with a 1–2 day lag."
