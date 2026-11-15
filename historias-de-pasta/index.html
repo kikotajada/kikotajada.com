@@ -501,7 +501,7 @@
       const svg = document.getElementById('viewsChart');
       const W = svg.clientWidth || 700;
       const H = W < 480 ? 220 : 260;
-      const m = { t: 8, r: 4, b: 26, l: 40 };
+      const m = { t: 8, r: 16, b: 26, l: 40 };
       const iw = W - m.l - m.r, ih = H - m.t - m.b;
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.setAttribute('height', H);
@@ -519,7 +519,8 @@
         g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#ece9e1" stroke-width="1"/>`;
         g += `<text x="${m.l - 8}" y="${yy + 3.5}" text-anchor="end" font-size="10" fill="#9a9a9a">${k === 0 ? '0' : fmtCompact.format(v)}</text>`;
       }
-      const every = W < 480 ? 3 : (W < 640 ? 2 : 1);
+      // Space date labels by width (~56px each), counted back from the latest day so it is always labelled
+      const every = Math.max(1, Math.ceil(56 / band));
       days.forEach((d, i) => {
         const cx = m.l + band * i + band / 2;
         let base = 0;
@@ -541,8 +542,8 @@
           }
           base += sg.v;
         });
-        if (i % every === 0 || i === days.length - 1) {
-          g += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="10" fill="#9a9a9a">${short(d)}</text>`;
+        if ((days.length - 1 - i) % every === 0) {
+          g += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#9a9a9a">${short(d)}</text>`;
         }
         g += `<rect class="hit" data-i="${i}" x="${m.l + band * i}" y="${m.t}" width="${band}" height="${ih}" fill="transparent"/>`;
       });
