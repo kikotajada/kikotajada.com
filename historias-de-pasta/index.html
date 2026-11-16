@@ -447,7 +447,7 @@
           <span class="pname"><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span>
           <span class="phandle">${esc(p.handle)}</span>
           <span class="pfollowers">${fmtFull.format(p.followers)}</span>
-          <span class="pmeta">followers · ${fmtCompact.format(p.views)} views</span>
+          <span class="pmeta">${p.id === 'youtube' ? 'subscribers' : 'followers'} ·${fmtCompact.format(p.views)} views</span>
           ${spark(p, s)}
         </a>`).join('');
 

@@ -27,6 +27,15 @@ EVOLUTION_METRICS = [
     ("IGEV37", "ig_posts"), ("FBEV17", "fb_followers"), ("FBEV22", "fb_reels_views"), ("FBEV49", "fb_media_views"),
 ]
 TIKTOK_POST_METRICS = ["TKPO01", "TKPO05", "TKPO07"]  # published date, description, views
+# Per-video files for the "most-watched" ranking, each [date, title/caption, views]:
+#   instagram_reels.json  ["IGRE01","IGRE03","IGRE23"]
+#   youtube_videos.json   ["YTVP01","YTVP17","YTVP06"]
+#   facebook_reels.json   ["FBRE01","FBRE05","FBRE10"]
+VIDEO_FILES = [
+    ("instagram_reels.json", "Instagram"),
+    ("youtube_videos.json", "YouTube"),
+    ("facebook_reels.json", "Facebook"),
+]
 
 PLATFORMS = [
     # id, name, handle, url, followers column, daily-views column
@@ -109,7 +118,17 @@ def main():
             "followersSeries": fseries, "viewsSeries": vseries,
         })
 
-    top = sorted(tk_rows, key=lambda r: -float(r["views"]))[:3]
+    # Most-watched videos across every platform. Per-video files are optional:
+    # a missing one just leaves that platform out of the ranking.
+    videos = [dict(r, platform="TikTok") for r in tk_rows]
+    for fname, pname in VIDEO_FILES:
+        f = RAW / fname
+        if not f.exists():
+            continue
+        for row in json.loads(f.read_text()).get("rows", []):
+            if row and len(row) >= 3 and row[2] not in (None, ""):
+                videos.append({"date": row[0], "title": row[1] or "", "views": row[2], "platform": pname})
+    top = sorted(videos, key=lambda r: -float(r["views"]))[:3]
     stats = {
         "updated": updated,
         "asOf": as_of,  # Metricool lags a day: the data describes the day before the run
@@ -122,7 +141,7 @@ def main():
         },
         "platforms": platforms,
         "topVideos": [
-            {"platform": "TikTok", "title": clean_title(r["title"]), "views": int(float(r["views"])), "date": iso(r["date"])}
+            {"platform": r["platform"], "title": clean_title(r["title"]), "views": int(float(r["views"])), "date": iso(r["date"])}
             for r in top
         ],
         "notes": "TikTok and Instagram views are counted on the day each video was published; "
