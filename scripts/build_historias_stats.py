@@ -31,10 +31,15 @@ TIKTOK_POST_METRICS = ["TKPO01", "TKPO05", "TKPO07"]  # published date, descript
 #   instagram_reels.json  ["IGRE01","IGRE03","IGRE23"]
 #   youtube_videos.json   ["YTVP01","YTVP17","YTVP06"]
 #   facebook_reels.json   ["FBRE01","FBRE05","FBRE10"]
+#   youtube_videos.json may also carry url + thumbnail: ["YTVP01","YTVP17","YTVP06","YTVP05","YTVP03"]
+# Links/thumbnails for Instagram and Facebook, each [date, views, url, thumb]:
+#   instagram_links.json  ["IGRE01","IGRE23","IGRE06","IGRE05"]
+#   facebook_links.json   ["FBRE01","FBRE10","FBRE06","FBRE04"]
+# TikTok links come from tiktok_posts.json when fetched as ["TKPO01","TKPO05","TKPO07","TKPO03","TKPO04"].
 VIDEO_FILES = [
-    ("instagram_reels.json", "Instagram"),
-    ("youtube_videos.json", "YouTube"),
-    ("facebook_reels.json", "Facebook"),
+    ("instagram_reels.json", "Instagram", "instagram_links.json"),
+    ("youtube_videos.json", "YouTube", None),
+    ("facebook_reels.json", "Facebook", "facebook_links.json"),
 ]
 
 PLATFORMS = [
@@ -67,6 +72,23 @@ def clean_title(desc, limit=72):
     return t
 
 
+def clean_url(u):
+    """Drop tracking query strings (TikTok's utm_*), keep YouTube's ?v=."""
+    if not u:
+        return None
+    if "youtube.com/watch" in u:
+        return u
+    return u.split("?", 1)[0]
+
+
+def better_thumb(thumb, url):
+    """YouTube: Metricool gives the 120px default.jpg; use the 320x180 16:9 one instead."""
+    m = re.search(r"[?&]v=([\w-]{11})", url or "")
+    if m and "youtube.com" in (url or ""):
+        return f"https://i.ytimg.com/vi/{m.group(1)}/mqdefault.jpg"
+    return thumb or None
+
+
 def main():
     updated = date.today().isoformat()
     if "--updated" in sys.argv:
@@ -81,7 +103,8 @@ def main():
         days[iso(r["date"])] = r
 
     tk = json.loads((RAW / "tiktok_posts.json").read_text())
-    tk_rows = [dict(zip(["date", "title", "views"], r)) for r in tk["rows"] if r and r[2] not in (None, "")]
+    # Columns: date, description, views[, url, cover] — the last two are optional.
+    tk_rows = [dict(zip(["date", "title", "views", "url", "thumb"], r)) for r in tk["rows"] if r and r[2] not in (None, "")]
     tk_by_day = {}
     for r in tk_rows:
         d = iso(r["date"])
@@ -121,13 +144,25 @@ def main():
     # Most-watched videos across every platform. Per-video files are optional:
     # a missing one just leaves that platform out of the ranking.
     videos = [dict(r, platform="TikTok") for r in tk_rows]
-    for fname, pname in VIDEO_FILES:
+    for fname, pname, links_name in VIDEO_FILES:
         f = RAW / fname
         if not f.exists():
             continue
+        # Instagram/Facebook responses get too large with url+thumb added, so those
+        # come from a separate [date, views, url, thumb] file, matched on date + views.
+        links = {}
+        lf = RAW / links_name if links_name else None
+        if lf and lf.exists():
+            for lr in json.loads(lf.read_text()).get("rows", []):
+                if lr and len(lr) >= 4 and lr[1] not in (None, ""):
+                    links[(lr[0], int(float(lr[1])))] = (lr[2], lr[3])
         for row in json.loads(f.read_text()).get("rows", []):
             if row and len(row) >= 3 and row[2] not in (None, ""):
-                videos.append({"date": row[0], "title": row[1] or "", "views": row[2], "platform": pname})
+                url, thumb = (row[3] if len(row) > 3 else None), (row[4] if len(row) > 4 else None)
+                if not url:
+                    url, thumb = links.get((row[0], int(float(row[2]))), (None, None))
+                videos.append({"date": row[0], "title": row[1] or "", "views": row[2],
+                               "platform": pname, "url": url, "thumb": thumb})
     top = sorted(videos, key=lambda r: -float(r["views"]))[:3]
     stats = {
         "updated": updated,
@@ -141,7 +176,8 @@ def main():
         },
         "platforms": platforms,
         "topVideos": [
-            {"platform": r["platform"], "title": clean_title(r["title"]), "views": int(float(r["views"])), "date": iso(r["date"])}
+            {"platform": r["platform"], "title": clean_title(r["title"]), "views": int(float(r["views"])), "date": iso(r["date"]),
+             "url": clean_url(r.get("url")), "thumb": better_thumb(r.get("thumb"), r.get("url"))}
             for r in top
         ],
         "notes": "TikTok and Instagram views are counted on the day each video was published; "
