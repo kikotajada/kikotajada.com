@@ -35,12 +35,22 @@ TIKTOK_POST_METRICS = ["TKPO01", "TKPO05", "TKPO07"]  # published date, descript
 # Links/thumbnails for Instagram and Facebook, each [date, views, url, thumb]:
 #   instagram_links.json  ["IGRE01","IGRE23","IGRE06","IGRE05"]
 #   facebook_links.json   ["FBRE01","FBRE10","FBRE06","FBRE04"]
-# TikTok links come from tiktok_posts.json when fetched as ["TKPO01","TKPO05","TKPO07","TKPO03","TKPO04"].
+# TikTok links come from tiktok_posts.json when fetched as ["TKPO01","TKPO05","TKPO07","TKPO03","TKPO04"],
+# or from the slim daily tiktok_links.json ["TKPO01","TKPO07","TKPO03"] = [date, views, url]
+# (cover derived from the video id: static.metricool.com/tkvideocovers/YYYYMM/<brand>-<id>.jpeg).
+# Daily view refresh, each [date, views, url] — overrides the views above, matched on url:
+#   instagram_views.json  ["IGRE01","IGRE23","IGRE06"]
+#   facebook_views.json   ["FBRE01","FBRE10","FBRE06"]
+#   youtube_views.json    ["YTVP01","YTVP06","YTVP05"]
+# The reels/videos/links files above are a static catalog (titles, thumbnails); refresh them
+# occasionally to pick up captions of new videos. New videos only in a *_views file still rank.
 VIDEO_FILES = [
     ("instagram_reels.json", "Instagram", "instagram_links.json"),
     ("youtube_videos.json", "YouTube", None),
     ("facebook_reels.json", "Facebook", "facebook_links.json"),
 ]
+VIEW_FILES = {"Instagram": "instagram_views.json", "YouTube": "youtube_views.json", "Facebook": "facebook_views.json"}
+BRAND_ID = "7304322"
 
 PLATFORMS = [
     # id, name, handle, url, followers column, daily-views column
@@ -143,7 +153,22 @@ def main():
 
     # Most-watched videos across every platform. Per-video files are optional:
     # a missing one just leaves that platform out of the ranking.
-    videos = [dict(r, platform="TikTok") for r in tk_rows]
+    tk_links = {}
+    tlf = RAW / "tiktok_links.json"
+    if tlf.exists():
+        for lr in json.loads(tlf.read_text()).get("rows", []):
+            if lr and len(lr) >= 3 and lr[1] not in (None, "") and lr[2]:
+                tk_links[(lr[0], int(float(lr[1])))] = lr[2]
+    videos = []
+    for r in tk_rows:
+        r = dict(r, platform="TikTok")
+        if not r.get("url"):
+            r["url"] = tk_links.get((r["date"], int(float(r["views"]))))
+        if r.get("url") and not r.get("thumb"):
+            m = re.search(r"/video/(\d+)", r["url"])
+            if m:
+                r["thumb"] = f"https://static.metricool.com/tkvideocovers/{r['date'][:6]}/{BRAND_ID}-{m.group(1)}.jpeg"
+        videos.append(r)
     for fname, pname, links_name in VIDEO_FILES:
         f = RAW / fname
         if not f.exists():
@@ -163,6 +188,24 @@ def main():
                     url, thumb = links.get((row[0], int(float(row[2]))), (None, None))
                 videos.append({"date": row[0], "title": row[1] or "", "views": row[2],
                                "platform": pname, "url": url, "thumb": thumb})
+    # Fresh per-video views (slim daily files) override the catalog, matched on clean url.
+    for pname, fname in VIEW_FILES.items():
+        f = RAW / fname
+        if not f.exists():
+            continue
+        fresh = {}
+        for row in json.loads(f.read_text()).get("rows", []):
+            if row and len(row) >= 3 and row[1] not in (None, "") and row[2]:
+                fresh[clean_url(row[2])] = (row[0], row[1], row[2])
+        seen = set()
+        for v in videos:
+            if v["platform"] == pname and clean_url(v.get("url")) in fresh:
+                k = clean_url(v["url"])
+                v["views"] = fresh[k][1]
+                seen.add(k)
+        for k, (d, views, url) in fresh.items():
+            if k not in seen:
+                videos.append({"date": d, "title": "", "views": views, "platform": pname, "url": url, "thumb": None})
     top = sorted(videos, key=lambda r: -float(r["views"]))[:3]
     stats = {
         "updated": updated,
