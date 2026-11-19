@@ -342,12 +342,12 @@
       <div class="chart-card" id="chartCard">
         <div class="chart-head">
           <div>
-            <div class="chart-title">Daily views by platform</div>
+            <div class="chart-title">Weekly views by platform</div>
             <div class="chart-sub" id="chartSub"></div>
           </div>
           <div class="legend" id="legend"></div>
         </div>
-        <svg id="viewsChart" role="img" aria-label="Stacked bar chart of daily views by platform"></svg>
+        <svg id="viewsChart" role="img" aria-label="Stacked bar chart of weekly views by platform"></svg>
         <div class="tooltip" id="tooltip"></div>
         <details class="table-view">
           <summary>Show as table</summary>
@@ -484,12 +484,14 @@
       document.getElementById('legend').innerHTML = s.platforms.map(p =>
         `<span><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span>`).join('');
 
-      const days = s.platforms[0].viewsSeries.map(d => d[0]);
-      document.getElementById('chartSub').textContent = short(days[0]) + ' – ' + short(days[days.length - 1]);
+      const allDays = s.platforms[0].viewsSeries.map(d => d[0]);
+      document.getElementById('chartSub').textContent = short(allDays[0]) + ' – ' + short(allDays[allDays.length - 1]) +
+        ' · weeks run Monday–Sunday';
+      const wk = weekly(s);
 
-      drawChart(s, days);
-      window.addEventListener('resize', () => drawChart(s, days));
-      buildTable(s, days);
+      drawChart(wk.s, wk.weeks);
+      window.addEventListener('resize', () => drawChart(wk.s, wk.weeks));
+      buildTable(wk.s, wk.weeks);
 
       document.getElementById('topVideos').innerHTML =
         `<div class="chart-title" style="margin-top:0.75rem">Most-watched videos</div>` +
@@ -528,6 +530,34 @@
         <circle cx="${x(last[0]).toFixed(1)}" cy="${y(last[1]).toFixed(1)}" r="2.5" fill="${color(p.id)}"/></svg>`;
     }
 
+    // Sum the daily series into Monday–Sunday weeks. A week the data only partly covers
+    // (launch week, the current week) is flagged partial and drawn faded.
+    function weekly(s) {
+      const dayMs = 864e5;
+      const monday = iso => {
+        const d = new Date(iso + 'T12:00:00Z');
+        return new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * dayMs).toISOString().slice(0, 10);
+      };
+      const keys = [], info = {};
+      s.platforms[0].viewsSeries.forEach(([d]) => {
+        const k = monday(d);
+        if (!info[k]) { info[k] = { start: d, end: d, n: 0 }; keys.push(k); }
+        info[k].end = d; info[k].n++;
+      });
+      const weeks = keys.map(k => ({ ...info[k], partial: info[k].n < 7 }));
+      const platforms = s.platforms.map(p => {
+        const sums = {};
+        p.viewsSeries.forEach(([d, v]) => {
+          const k = monday(d);
+          if (v !== null && v !== undefined) sums[k] = (sums[k] || 0) + v;
+          else if (!(k in sums)) sums[k] = null;
+        });
+        return { ...p, viewsSeries: keys.map(k => [k, sums[k] ?? null]) };
+      });
+      return { s: { ...s, platforms }, weeks };
+    }
+    const weekLabel = w => w.start === w.end ? short(w.start) : short(w.start) + ' – ' + short(w.end);
+
     function niceMax(v) {
       const p = Math.pow(10, Math.floor(Math.log10(v)));
       for (const m of [1, 1.2, 1.6, 2, 4, 6, 8, 10]) if (m * p >= v) return m * p;
@@ -558,7 +588,9 @@
       }
       // Space date labels by width (~56px each), counted back from the latest day so it is always labelled
       const every = Math.max(1, Math.ceil(56 / band));
-      days.forEach((d, i) => {
+      days.forEach((wk, i) => {
+        const d = wk.start;
+        const op = wk.partial ? ' fill-opacity="0.45"' : '';
         const cx = m.l + band * i + band / 2;
         let base = 0;
         const segs = s.platforms.map(p => ({ p, v: p.viewsSeries[i][1] || 0 })).filter(a => a.v > 0);
@@ -572,9 +604,9 @@
             if (top) {
               const r = Math.min(4, hgt, bw / 2);
               const x0 = cx - bw / 2, x1 = cx + bw / 2, yb = yTop + hgt;
-              g += `<path d="M${x0} ${yb}V${yTop + r}Q${x0} ${yTop} ${x0 + r} ${yTop}H${x1 - r}Q${x1} ${yTop} ${x1} ${yTop + r}V${yb}Z" fill="${color(sg.p.id)}"/>`;
+              g += `<path d="M${x0} ${yb}V${yTop + r}Q${x0} ${yTop} ${x0 + r} ${yTop}H${x1 - r}Q${x1} ${yTop} ${x1} ${yTop + r}V${yb}Z" fill="${color(sg.p.id)}"${op}/>`;
             } else {
-              g += `<rect x="${cx - bw / 2}" y="${yTop}" width="${bw}" height="${hgt}" fill="${color(sg.p.id)}"/>`;
+              g += `<rect x="${cx - bw / 2}" y="${yTop}" width="${bw}" height="${hgt}" fill="${color(sg.p.id)}"${op}/>`;
             }
           }
           base += sg.v;
@@ -599,7 +631,9 @@
             const v = p.viewsSeries[i][1];
             return `<div class="tt-row"><span><span class="swatch" style="background:${color(p.id)}"></span>${esc(p.name)}</span><span>${v === null ? '—' : fmtFull.format(v)}</span></div>`;
           }).join('');
-          tip.innerHTML = `<div class="tt-date">${short(days[i])}</div>${rows}<div class="tt-row tt-total"><span>Total</span><span>${fmtFull.format(totals[i])}</span></div>`;
+          const w = days[i];
+          const note = w.partial ? ` <span style="font-weight:400;opacity:0.7">(${i === days.length - 1 ? 'so far, ' : ''}${w.n} day${w.n > 1 ? 's' : ''})</span>` : '';
+          tip.innerHTML = `<div class="tt-date">${weekLabel(w)}${note}</div>${rows}<div class="tt-row tt-total"><span>Total</span><span>${fmtFull.format(totals[i])}</span></div>`;
           tip.style.opacity = 1;
           const cr = card.getBoundingClientRect(), sr = svg.getBoundingClientRect();
           const scale = sr.width / W;
@@ -616,10 +650,10 @@
     }
 
     function buildTable(s, days) {
-      let h = '<thead><tr><th>Day</th>' + s.platforms.map(p => `<th>${esc(p.name)}</th>`).join('') + '<th>Total</th></tr></thead><tbody>';
+      let h = '<thead><tr><th>Week</th>' + s.platforms.map(p => `<th>${esc(p.name)}</th>`).join('') + '<th>Total</th></tr></thead><tbody>';
       days.forEach((d, i) => {
         let tot = 0;
-        h += `<tr><td>${short(d)}</td>` + s.platforms.map(p => {
+        h += `<tr><td>${weekLabel(d)}${d.partial ? ' (partial)' : ''}</td>` + s.platforms.map(p => {
           const v = p.viewsSeries[i][1]; tot += v || 0;
           return `<td>${v === null ? '—' : fmtFull.format(v)}</td>`;
         }).join('') + `<td>${fmtFull.format(tot)}</td></tr>`;
